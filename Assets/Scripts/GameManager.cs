@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void ResetStage()
+    //It was private in the tutorial, but I need to call it from PlayerController.cs in order to reset the stage when the player falls into the pit
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

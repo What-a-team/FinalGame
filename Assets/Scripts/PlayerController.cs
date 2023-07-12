@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
         }
         if(collision.CompareTag("Pit"))
         {
-            FindObjectOfType<GameManager>().ResetStage();
+            FindObjectOfType<GameManager>().ResetStage();//I don't know why it doesn't work when I collide with the pit
         }
     }
 }
