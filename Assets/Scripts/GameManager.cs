@@ -5,6 +5,21 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager GlobalInstance;
+    public int NumOfAxes = 0;
+    public int NumOfWoods = 0;
+    void Start()
+    {
+        if (GlobalInstance == null)
+        {
+            GlobalInstance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))

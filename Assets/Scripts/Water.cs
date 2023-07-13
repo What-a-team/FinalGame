@@ -7,39 +7,29 @@ public class Water : MonoBehaviour
 {
     // Start is called before the first frame update
     //public Sprite newSprite;
-     public Tilemap waterTilemap;
+    public Tilemap waterTilemap;
     public TileBase grassTile;
-
-    private bool rockPushed = false;
-
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Rock"))
-        {
-            Destroy(collision.gameObject);
-            rockPushed = true;
-
-            // Get the tile position where the rock was pushed into
-            Vector3Int tilePosition = waterTilemap.WorldToCell(collision.transform.position);
-
-            // Change the tile to grass
-            waterTilemap.SetTile(tilePosition, grassTile);
-        }
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Player") && rockPushed)
-        {
-            // Allow the player to walk on the transformed water tile (now grass)
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
-        }
-    }
+    public TileBase groundTile;
     public void ChangeWaterSprite(Vector3 position)
     {
+        Debug.Log("RockInWater");
         Vector3Int tilePosition = waterTilemap.WorldToCell(position);// Get the tile position where the rock was pushed into
         waterTilemap.SetTile(tilePosition, grassTile);// Change the water in tileposition to grass
-        //Change the layer of the water here to grass
-        waterTilemap.gameObject.layer = default;
+        waterTilemap.gameObject.layer = LayerMask.NameToLayer("Default");// Change the layer of the tilemap to default
+        // Disable collider for the specified position
+    }
+    public void DestoryWater(Vector3 position)
+    {
+        Debug.Log("WoodOnWater");
+        Vector3Int tilePosition = waterTilemap.WorldToCell(position);// Get the tile position where the rock was pushed into
+        waterTilemap.SetTile(tilePosition, groundTile);// Change the water in tileposition to grass
+        waterTilemap.gameObject.layer = LayerMask.NameToLayer("Default");// Change the layer of the tilemap to default
+        // Disable collider for the specified position
+    } 
+    public void DisableColliderAtPosition()
+    {
+        // Disable collider for the specified position
+        //tilemap.GetComponent<TilemapCollider2D>().SetTileFlags(disabledPosition, TileFlags.None);
+        //Collider2D collider = tilemap.GetComponent<TilemapCollider2D>().SetColliderType(disabledPosition, Tile.ColliderType.None);
     }
 }
