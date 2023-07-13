@@ -7,21 +7,41 @@ public class PlayerController : MonoBehaviour
     Vector2 moveDir;
     public LayerMask detectLayer;//the layers that the raycast will detect 
     //remeber to set the layer that you want the player to interact with to in the Unity editor(because I forget to do that )
-    //public float mHeroSpeed = 20f;
+    //if the player get to the state of "confused", it will be hard to control the player
+    public bool isConfused = false;
     void Update()
     {
         Vector3 p = transform.localPosition;
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-            moveDir = Vector2.right;
+        //if the player is confused, it will move in a random direction
+        if (isConfused)
+        {
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                moveDir = Vector2.left;
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-            moveDir = Vector2.left;
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+                moveDir = Vector2.right;
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-            moveDir = Vector2.up;
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+                moveDir = Vector2.down;
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-            moveDir = Vector2.down;
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+                moveDir = Vector2.up;
+        }
+        //if the player is not confused, it will move in the direction that the player press
+        else if(!isConfused)
+        {
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                moveDir = Vector2.right;
+
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+                moveDir = Vector2.left;
+
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+                moveDir = Vector2.up;
+
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+                moveDir = Vector2.down;
+        }
 
         if(moveDir != Vector2.zero)
         {
@@ -33,24 +53,26 @@ public class PlayerController : MonoBehaviour
         moveDir = Vector2.zero;
     }
 
-    bool CanMoveToDir(Vector2 dir)
+    private bool CanMoveToDir(Vector2 dir)
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1.0f, detectLayer);//1.0f is the distance of raycast and detectLayer is the layer of the rock
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1.0f, detectLayer);
+        //1.0f is the distance of raycast and detectLayer is those layers that the raycast will detect
 
-        if (!hit)//no rock in front of the player or no wall in front of the box
+        if (!hit)//no rock and no tree in front of the player
         {    
-            Debug.Log("No box in front of the player");
             return true;
         }
         else
         {
-            if (hit.collider.GetComponent<Rock>() != null)//there is a rock in front of the player
+            if (hit.collider.GetComponent<Rock>() != null)//there is a rock in front of the player 
                 return hit.collider.GetComponent<Rock>().CanMoveToDir(dir);
+            else if(hit.collider.GetComponent<Pit>() != null)//there is a pit in front of the player
+                return false;
             else return false;
         }
     }
 
-    void Move(Vector2 dir)
+    private void Move(Vector2 dir)
     {
         transform.Translate(dir);
     }
@@ -59,13 +81,8 @@ public class PlayerController : MonoBehaviour
         if(collision.CompareTag("Sheep"))
         {
             FindObjectOfType<GameManager>().Win();
-            /*FindObjectOfType<GameManager>().finishedBoxs++;
-            FindObjectOfType<GameManager>().CheckFinish();
-            GetComponent<SpriteRenderer>().color = finishColor;*/
         }
-        if(collision.CompareTag("Pit"))
-        {
-            FindObjectOfType<GameManager>().ResetStage();//I don't know why it doesn't work when I collide with the pit
-        }
+        //when player collide with the waterground
+        
     }
 }

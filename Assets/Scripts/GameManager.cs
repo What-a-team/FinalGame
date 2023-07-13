@@ -5,33 +5,32 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public int totalBoxs;
-    public int finishedBoxs;
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
             ResetStage();
+        if (Input.GetKeyDown(KeyCode.Q))//quit the game
+            Application.Quit();
+        if (Input.GetKeyDown(KeyCode.N))//go to next level
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        if (Input.GetKeyDown(KeyCode.L))//go to last level
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
     public void Win()
     {
-        if(finishedBoxs == totalBoxs)
-        {
             print("YOU WIN!");
             StartCoroutine(LoadNextStage());
-        }
     }
 
-    public void ResetStage()
-    //It was private in the tutorial, but I need to call it from PlayerController.cs in order to reset the stage when the player falls into the pit
+    private void ResetStage()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     IEnumerator LoadNextStage()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1.0f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }
